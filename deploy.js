@@ -1,6 +1,7 @@
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const { Web3 } = require("web3");
 const { interface, bytecode } = require("./compile");
+const { describe } = require("mocha");
 
 const provider = new HDWalletProvider(
   process.env.MNEMONIC, // Use mnemonic from .env file
@@ -9,7 +10,7 @@ const provider = new HDWalletProvider(
 
 const web3 = new Web3(provider);
 
-const deploy = async () => {
+beforeEach(async () => {
   const accounts = await web3.eth.getAccounts();
 
   console.log("Attempting to deploy from account", accounts[0]);
@@ -18,8 +19,7 @@ const deploy = async () => {
     .deploy({ data: bytecode })
     .send({ gas: "1000000", from: accounts[0] });
 
-  console.log(interface);
+  // console.log(interface);
   console.log("Contract deployed to", result.options.address);
   provider.engine.stop();
-};
-deploy();
+});
